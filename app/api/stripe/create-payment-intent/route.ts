@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe, StripeNotConfiguredError } from "@/lib/stripe";
 import { ARITHMOS_MODELS } from "@/lib/constants";
+import { assertSameOrigin } from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -9,6 +10,9 @@ interface CreatePaymentIntentRequest {
 }
 
 export async function POST(req: NextRequest) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
+
   let body: CreatePaymentIntentRequest;
 
   try {

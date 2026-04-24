@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { genai } from "@/lib/gemini";
+import { assertSameOrigin } from "@/lib/security";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -8,6 +9,9 @@ interface ConciergeRequest {
   message: string;
   conversationHistory?: { role: "user" | "model"; text: string }[];
 }
+
+const MAX_HISTORY_TURNS = 20;
+const MAX_HISTORY_TEXT = 1000;
 
 const CONCIERGE_SYSTEM = `You are the ARITHMOS™ Quantum Concierge™ — an AI agent of uncompromising professionalism, representing the pinnacle of enterprise computational services.
 
@@ -22,6 +26,9 @@ Rules:
 - Always end responses with a closing statement of assurance.`;
 
 export async function POST(req: NextRequest) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
+
   let body: ConciergeRequest;
 
   try {
@@ -34,6 +41,29 @@ export async function POST(req: NextRequest) {
 
   if (!message || typeof message !== "string" || message.length > 1000) {
     return NextResponse.json({ error: "Invalid message." }, { status: 400 });
+  }
+
+  // Cap history length and validate every entry. Without this a client can
+  // submit thousands of fake "model" turns to inflate token spend or
+  // jailbreak the persona via spoofed assistant history.
+  if (!Array.isArray(conversationHistory)) {
+    return NextResponse.json({ error: "Invalid history." }, { status: 400 });
+  }
+  if (conversationHistory.length > MAX_HISTORY_TURNS) {
+    return NextResponse.json(
+      { error: `History exceeds maximum of ${MAX_HISTORY_TURNS} turns.` },
+      { status: 400 },
+    );
+  }
+  for (const h of conversationHistory) {
+    if (
+      !h ||
+      (h.role !== "user" && h.role !== "model") ||
+      typeof h.text !== "string" ||
+      h.text.length > MAX_HISTORY_TEXT
+    ) {
+      return NextResponse.json({ error: "Invalid history entry." }, { status: 400 });
+    }
   }
 
   try {

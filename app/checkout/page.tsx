@@ -25,10 +25,17 @@ export default async function CheckoutPage(props: {
     return <NotConfiguredView modelId={model.id} modelName={model.name} />;
   }
 
-  const h = await headers();
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const host = h.get("host") ?? "localhost:3000";
-  const origin = `${proto}://${host}`;
+  // Prefer the configured app URL — host/x-forwarded-* are spoofable on
+  // misconfigured proxies and would let an attacker steer the Stripe
+  // success/cancel redirect at their own domain.
+  const configuredOrigin = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+  let origin = configuredOrigin;
+  if (!origin) {
+    const h = await headers();
+    const proto = h.get("x-forwarded-proto") ?? "http";
+    const host = h.get("host") ?? "localhost:3000";
+    origin = `${proto}://${host}`;
+  }
 
   const stripe = getStripe();
   const session = await stripe.checkout.sessions.create({

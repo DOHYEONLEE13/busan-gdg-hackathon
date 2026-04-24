@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calculate, type GeminiModel } from "@/lib/gemini";
 import { ARITHMOS_MODELS } from "@/lib/constants";
+import { assertSameOrigin } from "@/lib/security";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -11,6 +12,9 @@ interface CalculateRequest {
 }
 
 export async function POST(req: NextRequest) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
+
   let body: CalculateRequest;
 
   try {

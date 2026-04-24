@@ -5,6 +5,7 @@ import {
   type ArithmosModelId,
 } from "@/lib/constants";
 import { getStripe, StripeNotConfiguredError } from "@/lib/stripe";
+import { assertSameOrigin } from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,9 @@ type Body = {
 };
 
 export async function POST(req: NextRequest) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
+
   let body: Body = {};
   try {
     body = (await req.json()) as Body;

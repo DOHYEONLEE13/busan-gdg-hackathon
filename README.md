@@ -5,7 +5,7 @@
 > 사칙연산을 ₩49,000/월부터 ₩2,490,000/월에 파는 엔터프라이즈 계산 지능 플랫폼.
 > 그리고 구독과 **별개로**, 계산 한 번마다 따로 결제해야 답을 알려줍니다.
 
-[**Useless AI Championship**](https://useless-ai.dev) 출품작 · 부산 GDG 해커톤 제출
+[**Useless AI Championship**](https://kr.linkedin.com/posts/gdg-busan_build-with-ai-x-gdg-busan-2026-ai-hackathon-activity-7437497165066760192-SOvv) 출품작 · 부산 GDG 해커톤 제출
 
 ---
 
@@ -382,6 +382,77 @@ Brand Gold:       #c9a961   (accents, trim, Ultra/Pro)
 Destructive:      #ff3b30
 Success:          #30d158
 ```
+
+## 보안 검토 (Security Review)
+
+> 2026-04-24 자체 보안 감사(`/cso`) 결과 및 적용된 수정 내역.
+> 데모/해커톤 프로젝트 기준이며, 운영 환경 배포 시 추가 강화가 필요합니다.
+
+### 발견 사항 요약
+
+| # | 심각도 | 카테고리 | 위치 | 상태 |
+|---|---|---|---|---|
+| F1 | HIGH | 비용 증폭 (LLM) | `app/api/calculate/route.ts` | **FIXED** |
+| F2 | HIGH | 비용 증폭 + 토큰 폭증 | `app/api/concierge/route.ts` | **FIXED** |
+| F3 | HIGH | Stripe 세션 스팸 | `app/api/stripe/*` | **FIXED (browser)** |
+| F4 | MEDIUM | 보안 헤더 누락 (CSP/HSTS/XFO) | `next.config.ts` | **FIXED** |
+| F5 | MEDIUM | 페르소나 우회 (대화 이력 위조) | `app/api/concierge/route.ts` | **FIXED** |
+| F6 | MEDIUM | 호스트 헤더 신뢰 (리다이렉트 변조 위험) | `app/checkout/page.tsx` | **FIXED** |
+
+> Stripe Webhook 시그니처 검증, `sk_live_*` 차단, `.env.local` gitignore, 입력 길이 제한(256자), 클라이언트 키만 `NEXT_PUBLIC_*` 노출 등 기존 안전 장치는 정상 동작 확인.
+
+### 발견 사항 상세
+
+**F1 — `/api/calculate` 인증 없는 Gemini 비용 증폭 (HIGH, 9/10)**
+- 인증·레이트 리밋 없이 누구나 POST 가능. `quantum`/`ultra` 모델은 `gemini-2.5-pro` + 8k thinking budget을 사용해 호출당 비용이 가장 큼.
+- 공격 시나리오: 외부에서 병렬 cURL 루프 → 프로젝트의 Gemini 쿼터/요금 소진.
+- 수정: `Origin` 헤더가 배포 도메인과 일치할 때만 허용 (`lib/security.ts` → `assertSameOrigin`). 브라우저 기반 남용 차단. 서버-서버 남용은 다음 단계(Cloudflare WAF / Durable Object 레이트 리밋)에서 보강.
+
+**F2 — `/api/concierge` 비용 증폭 + 무제한 대화 이력 (HIGH, 9/10)**
+- 인증·레이트 리밋 없음. `conversationHistory` 배열 길이/요소에 검증 없어, 수천 개 메시지를 실어 보내면 매 요청마다 막대한 토큰을 태움. 항상 `gemini-2.5-pro` 사용.
+- 수정: 동일 Origin 가드 + 이력 최대 20턴, 각 텍스트 1,000자 캡, 배열·역할·타입 화이트리스트 검증.
+
+**F3 — Stripe 체크아웃 세션/PaymentIntent 스팸 (HIGH, 8/10)**
+- `/api/stripe/create-calc-session`, `/api/stripe/create-payment-intent` 둘 다 인증·Origin 검사 없음. 외부에서 무한 호출 시 Stripe 대시보드 오염 + Stripe 측 레이트 리밋 패널티 위험.
+- 수정: 두 라우트 모두 `assertSameOrigin` 적용. (Webhook은 Stripe 시그니처로 이미 보호되므로 미적용.)
+
+**F4 — 보안 헤더 누락 (MEDIUM, 9/10)**
+- `next.config.ts`에 `headers()` 설정이 없어 CSP/HSTS/X-Frame-Options/Referrer-Policy 모두 미설정. 클릭재킹·MIME 스니핑·다운그레이드 공격 표면 확대.
+- 수정: `next.config.ts`에 `SECURITY_HEADERS` 정의 후 모든 경로에 적용.
+  - `Content-Security-Policy` — Stripe(`js.stripe.com`, `api.stripe.com`, `hooks.stripe.com`), Supabase(`*.supabase.co`), Gemini(`generativelanguage.googleapis.com`), Google Fonts만 화이트리스트. `frame-ancestors 'none'` + `X-Frame-Options: DENY`로 iframe 임베딩 차단.
+  - `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera/mic/geo 차단).
+
+**F5 — Concierge 대화 이력 역할 위조 (MEDIUM, 8/10)**
+- 클라이언트가 `role: "model"`로 가짜 어시스턴트 턴을 끼워 넣어 "ARITHMOS Quantum Concierge" 페르소나/규칙을 우회할 수 있었음. (system instruction은 보호되지만, 모델은 "이전 어시스턴트 발화"를 참고해 톤·정책을 따르므로 효과적인 jailbreak 벡터.)
+- 수정: F2의 검증 로직이 `role`을 `"user" | "model"`로 화이트리스트하고, 길이·타입·턴 수를 강제. (역할 자체를 막지는 못하나, 무제한 위조와 결합된 토큰 폭증·페르소나 우회의 효과를 크게 약화.)
+
+**F6 — `Host` / `x-forwarded-proto` 신뢰로 인한 리다이렉트 변조 (MEDIUM, 7/10)**
+- `app/checkout/page.tsx`가 들어오는 헤더에서 직접 origin을 합성해 Stripe `success_url` / `cancel_url`로 사용. 잘못 구성된 프록시·로컬 환경에서 헤더가 위조되면 결제 완료 후 사용자가 공격자 도메인으로 리다이렉트될 수 있음.
+- 수정: `process.env.NEXT_PUBLIC_APP_URL`을 우선 사용하고, 미설정 시에만 헤더 폴백.
+
+### 적용되지 않은 권고 (운영 배포 시)
+
+- **본격 레이트 리밋** — 같은 Origin이라도 한 IP가 분당 N회 초과 호출하면 차단. Cloudflare Workers 기준 [Rate Limiting](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/) 바인딩 또는 Durable Object 카운터.
+- **인증** — 데모는 의도적으로 무인증. 실서비스라면 Supabase Auth로 사용자/세션 단위 한도 부여.
+- **Webhook 후속 처리** — `app/api/stripe/webhook/route.ts`의 `payment_intent.succeeded` 핸들러는 현재 로깅 + TODO. 실제 구독 상태를 Supabase에 반영해야 결제·권한 동기화 완성.
+- **`SUPABASE_SERVICE_ROLE_KEY`** — `lib/supabase.ts:createServiceClient`가 export되어 있으나 호출처 없음. 클라이언트 컴포넌트에서 실수로 import되지 않도록 향후 사용 시 `server-only` 모듈로 격리 필요.
+- **CSP `'unsafe-inline'`** — Tailwind v4 / Next.js 인라인 스타일 호환을 위해 style-src에 허용. 가능하면 nonce 기반으로 전환.
+
+### 변경된 파일
+
+```
+lib/security.ts                                       (NEW)
+next.config.ts                                        (보안 헤더 추가)
+app/api/calculate/route.ts                            (Origin 가드)
+app/api/concierge/route.ts                            (Origin 가드 + 이력 검증)
+app/api/stripe/create-calc-session/route.ts           (Origin 가드)
+app/api/stripe/create-payment-intent/route.ts         (Origin 가드)
+app/checkout/page.tsx                                 (env URL 우선)
+```
+
+### 면책
+
+본 검토는 AI 기반(`/cso`) 1차 스캔 결과이며 전문 모의해킹 감사를 대체하지 않습니다. PII·결제·민감 데이터를 다루는 운영 시스템은 별도 전문 감사를 권장합니다.
 
 ## 라이선스 · 크레딧
 
