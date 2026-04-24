@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(curl *)",
+      "Read(//c/Users/USER/Downloads/**)",
+      "Bash(cp \"C:/Users/USER/Downloads/calculator.glb\" \"C:/Users/USER/Desktop/이도현/arithmos/public/models/pro.glb\")",
+      "Bash(node -e ' *)",
+      "Bash(taskkill *)",
+      "Bash(npm run *)",
+      "Bash(git init *)"
+    ]
+  }
+}

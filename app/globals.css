@@ -1,0 +1,161 @@
+@import url("https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css");
+@import "tailwindcss";
+
+/* ─── ARITHMOS™ Design System ─────────────────────────────────────────────── */
+
+@theme inline {
+  /* Colors */
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface-elevated: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-primary: #1d1d1f;
+  --color-foreground: #f5f5f7;
+  --color-foreground-secondary: #86868b;
+  --color-foreground-tertiary: #48484a;
+
+  /* ARITHMOS Gold */
+  --color-gold: #c9a961;
+  --color-gold-light: #e2c882;
+  --color-gold-dark: #a8893e;
+
+  /* Semantic */
+  --color-destructive: #ff3b30;
+  --color-success: #30d158;
+
+  /* Fonts */
+  --font-sans: var(--next-font-inter), "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--next-font-jetbrains-mono), "SF Mono", ui-monospace, monospace;
+  --font-display: var(--next-font-inter), "Pretendard Variable", sans-serif;
+  --font-manrope: var(--next-font-manrope), "Manrope", sans-serif;
+  --font-cabin: var(--next-font-cabin), "Cabin", sans-serif;
+  --font-instrument-serif: var(--next-font-instrument-serif), "Instrument Serif", serif;
+  --font-inter: var(--next-font-inter), "Inter", sans-serif;
+
+  /* Spacing scale */
+  --spacing-section: 120px;
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: #0a0a0a;
+  color: #f5f5f7;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  background: #0a0a0a;
+  color: #f5f5f7;
+}
+
+/* ─── Typography ───────────────────────────────────────────────────────────── */
+
+.text-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+}
+
+.text-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.text-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+  color: #86868b;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+}
+
+.text-gold {
+  color: #c9a961;
+}
+
+/* ─── Utility ──────────────────────────────────────────────────────────────── */
+
+.section {
+  padding-block: var(--spacing-section);
+}
+
+.container-arithmos {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.divider {
+  height: 1px;
+  background: #2a2a2a;
+}
+
+/* ─── Holographic (Quantum Edition) ────────────────────────────────────────── */
+
+.gradient-holographic {
+  background: linear-gradient(
+    135deg,
+    #ff6ec7 0%,
+    #a855f7 20%,
+    #3b82f6 40%,
+    #06b6d4 60%,
+    #10b981 80%,
+    #f59e0b 100%
+  );
+  background-size: 300% 300%;
+  animation: holographic-shift 6s ease infinite;
+}
+
+@keyframes holographic-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-10%, -5%, 0) rotate(0deg); }
+  50%  { transform: translate3d(10%, 5%, 0) rotate(180deg); }
+  100% { transform: translate3d(-10%, -5%, 0) rotate(360deg); }
+}
+
+.aurora-drift {
+  animation: aurora-drift 18s linear infinite;
+}
+
+@keyframes pulse-accent {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1.0; }
+}
+
+.pulse-accent {
+  animation: pulse-accent 2.2s ease-in-out infinite;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
