@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ARITHMOS_MODELS } from "@/lib/constants";
+import { ARITHMOS_MODELS, BACKGROUND_VIDEO_SRC } from "@/lib/constants";
 import { Footer } from "@/components/landing/Footer";
 
 type PageParams = { id: string };
@@ -55,6 +55,22 @@ export default async function ModelPage(props: {
 
       {/* Hero */}
       <section className="relative px-6 lg:px-[120px] pt-10 pb-28 overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          aria-hidden="true"
+        >
+          <source src={BACKGROUND_VIDEO_SRC} type="video/mp4" />
+        </video>
+        {/* Legibility scrim — keep hero copy readable on top of motion. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-[#0a0a0a]"
+        />
         <AccentGlow accent={accent} isHolographic={isHolographic} />
 
         <div className="relative max-w-[1200px] mx-auto">

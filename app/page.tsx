@@ -5,9 +5,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Pricing } from "@/components/landing/Pricing";
 import { Reviews } from "@/components/landing/Reviews";
 import { Services } from "@/components/landing/Services";
-
-const VIDEO_SRC =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4";
+import { BACKGROUND_VIDEO_SRC } from "@/lib/constants";
 
 export default function HomePage() {
   return (
@@ -22,7 +20,7 @@ export default function HomePage() {
           className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
-          <source src={VIDEO_SRC} type="video/mp4" />
+          <source src={BACKGROUND_VIDEO_SRC} type="video/mp4" />
         </video>
 
         <Navbar />

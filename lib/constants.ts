@@ -224,3 +224,9 @@ export const ACCURACY_DISCLAIMER =
 
 export const TEST_CARD_NOTICE =
   "This is a demonstration project. No real charges will be made. Test card: 4242 4242 4242 4242";
+
+/* Hero background video, shared by the landing page and every model detail
+   page. ~28 MB MP4, hosted on CloudFront — also whitelisted in next.config.ts
+   CSP `media-src`. Update both places if the URL ever changes. */
+export const BACKGROUND_VIDEO_SRC =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4";
