@@ -197,6 +197,13 @@ body {
   to   { opacity: 1; transform: translateY(0)   scaleY(1);    }
 }
 
+/* SnarkToast — keeps the -50% x translate so the toast stays
+   horizontally centered regardless of the rise animation. */
+@keyframes snark-rise {
+  from { opacity: 0; transform: translate(-50%, 16px) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, 0)    scale(1);    }
+}
+
 /* ─── Scrollbar ────────────────────────────────────────────────────────────── */
 
 ::-webkit-scrollbar { width: 4px; }

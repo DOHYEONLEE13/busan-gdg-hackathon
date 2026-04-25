@@ -6,8 +6,11 @@ import { CalculatorFrame } from "./CalculatorFrame";
 import { DemoPaymentModal } from "./DemoPaymentModal";
 import { ModelSelector } from "./ModelSelector";
 import { RevealPaymentModal } from "./RevealPaymentModal";
+import { SnarkToast } from "./SnarkToast";
 import { calcReducer, initialState, type CalcAction } from "./calcReducer";
 import { THEMES } from "./themes";
+
+type SnarkData = { expression: string; value: string };
 
 type StreamChunk =
   | { type: "thought"; text: string }
@@ -20,6 +23,7 @@ export function Calculator() {
   const [modelId, setModelId] = useState<ArithmosModelId>("ultra");
   const [modalOpen, setModalOpen] = useState(false);
   const [revealingValue, setRevealingValue] = useState<string | null>(null);
+  const [snark, setSnark] = useState<SnarkData | null>(null);
   /* `?stripe=1` opts into the real Stripe Embedded Checkout flow for
      debugging / showing judges the underlying integration. Default is the
      friction-free demo modal. */
@@ -138,8 +142,17 @@ export function Calculator() {
   }, [state.pendingResult, state.display]);
 
   const handleRevealDone = useCallback(() => {
+    /* Hand off the just-revealed (expression, value) to the snark
+       toast — the actual reducer state may have moved on by the time
+       SnarkToast mounts, so capture both before clearing reveal. */
+    setSnark((s) => {
+      if (s) return s;
+      const expr = state.lastExpression;
+      const val = revealingValue;
+      return expr && val ? { expression: expr, value: val } : null;
+    });
     setRevealingValue(null);
-  }, []);
+  }, [state.lastExpression, revealingValue]);
 
   const handleCancel = useCallback(() => {
     setModalOpen(false);
@@ -179,6 +192,15 @@ export function Calculator() {
       <div className="hidden sm:block pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 font-inter text-[12px] text-white/35 z-10 text-center">
         키보드 입력 가능 · 숫자 / + − × ÷ / Enter(=) / Esc(C) / . / %
       </div>
+
+      {snark ? (
+        <SnarkToast
+          modelId={modelId}
+          expression={snark.expression}
+          value={snark.value}
+          onDismiss={() => setSnark(null)}
+        />
+      ) : null}
 
       {modalOpen && locked && state.lastExpression ? (
         useRealStripe ? (
