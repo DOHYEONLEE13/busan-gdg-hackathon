@@ -4,7 +4,11 @@ import {
   OPERATION_PRICES,
   type ArithmosModelId,
 } from "@/lib/constants";
-import { getStripe, StripeNotConfiguredError } from "@/lib/stripe";
+import {
+  getDemoCustomerId,
+  getStripe,
+  StripeNotConfiguredError,
+} from "@/lib/stripe";
 import { assertSameOrigin } from "@/lib/security";
 
 export const runtime = "nodejs";
@@ -36,10 +40,19 @@ export async function POST(req: NextRequest) {
 
   try {
     const stripe = getStripe();
+    // Demo customer carries a pre-attached 4242 test card so the embedded
+    // checkout shows "Pay with •••• 4242" as the default option — no card
+    // entry, one-click completion. Eliminates the prototype-vote drop-off.
+    const demoCustomerId = await getDemoCustomerId(stripe);
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded_page",
       mode: "payment",
       redirect_on_completion: "never",
+      customer: demoCustomerId,
+      saved_payment_method_options: {
+        payment_method_save: "disabled",
+        allow_redisplay_filters: ["always"],
+      },
       line_items: [
         {
           price_data: {
