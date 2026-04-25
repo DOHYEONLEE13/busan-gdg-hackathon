@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ARITHMOS_MODELS } from "@/lib/constants";
+import { ARITHMOS_MODELS, OPERATION_PRICES, formatKrw } from "@/lib/constants";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
@@ -98,10 +98,10 @@ export default function ModelsIndex() {
                   <div className="mt-8 pt-5 border-t border-white/10 flex items-baseline justify-between gap-2">
                     <div>
                       <span className="font-instrument-serif text-white text-[28px] leading-none">
-                        {m.priceLabel}
+                        {formatKrw(OPERATION_PRICES[m.id])}
                       </span>
                       <span className="ml-1 font-cabin text-white/50 text-[12px]">
-                        {m.period}
+                        /회
                       </span>
                     </div>
                     <span className="font-cabin text-[12px] text-white/50 group-hover:text-white transition-colors">

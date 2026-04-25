@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     template: "%s | ARITHMOS™",
   },
   description:
-    "The world's first enterprise-grade computational intelligence platform. Industry-leading precision. Uncompromising accuracy. Starting at ₩49,000/mo.",
+    "The world's first enterprise-grade computational intelligence platform. Industry-leading precision. Uncompromising accuracy. From ₩1,000 per calculation.",
   keywords: [
     "ARITHMOS",
     "enterprise calculator",

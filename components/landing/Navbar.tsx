@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ARITHMOS_MODELS } from "@/lib/constants";
+import { ARITHMOS_MODELS, OPERATION_PRICES, formatKrw } from "@/lib/constants";
 
 type NavLink = {
   label: string;
@@ -224,7 +224,7 @@ function ProductsDropdown({ onSelect }: { onSelect: () => void }) {
                     {m.name}
                   </span>
                   <span className="font-manrope text-[12px] text-white/45 shrink-0">
-                    {m.priceLabel}
+                    {formatKrw(OPERATION_PRICES[m.id])}/회
                   </span>
                 </span>
                 <span className="mt-0.5 block font-manrope text-[12px] text-white/50">

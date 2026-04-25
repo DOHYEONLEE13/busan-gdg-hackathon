@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ARITHMOS_MODELS, BACKGROUND_VIDEO_SRC } from "@/lib/constants";
+import {
+  ARITHMOS_MODELS,
+  BACKGROUND_VIDEO_SRC,
+  OPERATION_PRICES,
+  formatKrw,
+} from "@/lib/constants";
 import { Footer } from "@/components/landing/Footer";
 
 type PageParams = { id: string };
@@ -115,33 +120,31 @@ export default async function ModelPage(props: {
           <div className="mt-12 flex flex-wrap items-end gap-x-10 gap-y-6">
             <div>
               <div className="font-cabin uppercase tracking-[0.22em] text-[10px] text-white/40">
-                Subscription
+                Per Calculation
               </div>
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="font-instrument-serif text-white text-5xl lg:text-[64px] leading-none tracking-tight">
-                  {model.priceLabel}
+                  {formatKrw(OPERATION_PRICES[model.id])}
                 </span>
-                <span className="font-cabin text-white/50 text-[14px]">
-                  {model.period}
-                </span>
+                <span className="font-cabin text-white/50 text-[14px]">/회</span>
               </div>
               <div className="mt-2 font-inter text-[12px] text-white/35">
-                연간 약정 · VAT 별도 · 기업 단가 별도 협의
+                1회 계산 결과 공개 시 결제 · 정기 구독 없음
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href={`/checkout?model=${model.id}`}
+                href="/calculator"
                 className="h-12 px-6 inline-flex items-center justify-center rounded-[10px] bg-[#7b39fc] text-white font-cabin font-medium text-[15px] hover:bg-[#8d4dff] transition-colors shadow-[0_4px_20px_rgba(123,57,252,0.35)]"
               >
-                도입 구독 시작
+                {formatKrw(OPERATION_PRICES[model.id])}로 사용해보기
               </Link>
               <Link
-                href="/calculator"
+                href="/#pricing"
                 className="h-12 px-6 inline-flex items-center justify-center rounded-[10px] bg-white/5 border border-white/15 text-white font-cabin font-medium text-[15px] hover:bg-white/10 transition-colors"
               >
-                계산기에서 체험
+                다른 모델 비교
               </Link>
             </div>
           </div>
@@ -231,24 +234,24 @@ export default async function ModelPage(props: {
                 Next Step
               </span>
               <h2 className="mt-4 font-instrument-serif text-white text-4xl sm:text-5xl lg:text-[64px] leading-[1.05] tracking-tight">
-                {model.name}을 <em className="italic">도입</em>하세요.
+                {model.name}, <em className="italic">지금 시작</em>.
               </h2>
               <p className="mt-5 font-inter text-[17px] text-white/70 leading-relaxed max-w-[540px]">
-                기업 단위 도입, 사용자 수 기반 단가, 전담 온보딩 세션 등
-                자세한 조건은 영업 담당이 회신합니다.
+                정기 구독 없이 1회 계산당 {formatKrw(OPERATION_PRICES[model.id])}로
+                사용 가능합니다. 시연 환경에서 실제 결제는 발생하지 않습니다.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-3">
                 <Link
-                  href={`/checkout?model=${model.id}`}
+                  href="/calculator"
                   className="h-12 px-6 inline-flex items-center justify-center rounded-[10px] bg-[#7b39fc] text-white font-cabin font-medium text-[15px] hover:bg-[#8d4dff] transition-colors shadow-[0_4px_20px_rgba(123,57,252,0.35)]"
                 >
-                  도입 구독 시작
+                  계산기 이용하기
                 </Link>
                 <Link
                   href="/#contact"
                   className="h-12 px-6 inline-flex items-center justify-center rounded-[10px] bg-white/10 border border-white/20 text-white font-cabin font-medium text-[15px] hover:bg-white/15 transition-colors"
                 >
-                  기업 단가 문의
+                  기업 도입 문의
                 </Link>
               </div>
               <p className="mt-5 font-inter text-[12px] text-white/40">
