@@ -85,8 +85,16 @@ export function DemoPaymentModal({
             : "border-white/10"
         }`}
       >
+        {/* Floating Centurion card — modal-wide ambient background */}
+        <CenturionCardBg />
+        {/* Vignette so foreground copy stays readable on top of motion */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0f1015]/85 via-[#0f1015]/55 to-[#0f1015]/90"
+        />
+
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
+        <div className="relative px-6 pt-6 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
           <div>
             <span
               className={`font-cabin uppercase tracking-[0.28em] text-[10px] ${
@@ -117,7 +125,7 @@ export function DemoPaymentModal({
         </div>
 
         {/* Order summary */}
-        <div className="px-6 py-5 space-y-4">
+        <div className="relative px-6 py-5 space-y-4">
           <div className="flex items-baseline justify-between gap-3">
             <div className="min-w-0">
               <div className="font-cabin uppercase tracking-[0.18em] text-[9px] text-white/40">
@@ -159,45 +167,48 @@ export function DemoPaymentModal({
           </div>
         </div>
 
-        {/* Action area — Centurion card 3D background floats behind the
-            primary CTA / processing pill. Pointer events are scoped to
-            the button so the canvas never steals clicks. */}
-        <div className="px-6 pb-6">
-          <div className="relative h-[120px] rounded-[14px] overflow-hidden border border-white/10 bg-gradient-to-b from-black/40 via-[#0a0814]/60 to-black/40">
-            <CenturionCardBg />
-            <div className="absolute inset-0 flex items-end p-3">
-              {stage === "idle" ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStage("processing");
-                    setPhaseIdx(0);
-                  }}
-                  className={`relative w-full h-12 rounded-[12px] font-cabin font-medium text-[14.5px] tracking-[0.04em] flex items-center justify-center gap-2 transition-[transform,background-color] hover:scale-[1.01] active:scale-[0.99] backdrop-blur-md ${
-                    isHalo
-                      ? "gradient-holographic text-black shadow-[0_8px_28px_rgba(168,85,247,0.45)]"
-                      : "bg-[#7b39fc]/90 text-white hover:bg-[#8d4dff] shadow-[0_6px_22px_rgba(123,57,252,0.4)]"
-                  }`}
-                >
-                  <BoltIcon />
-                  {formatKrw(price)} · 1-Tap 결제 승인
-                </button>
-              ) : (
-                <div className="relative w-full">
-                  <ProcessingState
-                    phaseIdx={phaseIdx}
-                    done={stage === "done"}
-                    isHalo={isHalo}
-                  />
-                </div>
-              )}
+        {/* Action area */}
+        <div className="relative px-6 pb-6">
+          {stage === "idle" ? (
+            <button
+              type="button"
+              onClick={() => {
+                setStage("processing");
+                setPhaseIdx(0);
+              }}
+              className={`w-full h-12 rounded-[12px] font-cabin font-medium text-[14.5px] tracking-[0.04em] flex items-center justify-center gap-2 transition-[transform,background-color] hover:scale-[1.01] active:scale-[0.99] ${
+                isHalo
+                  ? "gradient-holographic text-black shadow-[0_8px_28px_rgba(168,85,247,0.45)]"
+                  : "bg-[#7b39fc] text-white hover:bg-[#8d4dff] shadow-[0_6px_22px_rgba(123,57,252,0.4)]"
+              }`}
+            >
+              <BoltIcon />
+              {formatKrw(price)} · 1-Tap 결제 승인
+            </button>
+          ) : (
+            <ProcessingState
+              phaseIdx={phaseIdx}
+              done={stage === "done"}
+              isHalo={isHalo}
+            />
+          )}
+
+          {/* Trust panel — bigger, friendlier framing so judges/visitors
+              feel safe clicking. Green tint + shield icon read as a
+              security badge rather than fine print. */}
+          <div className="mt-4 rounded-[12px] border border-[#7ed0a8]/25 bg-[#7ed0a8]/[0.06] px-4 py-3 flex items-start gap-3">
+            <ShieldIcon />
+            <div className="flex-1 min-w-0">
+              <div className="font-cabin font-medium uppercase tracking-[0.16em] text-[11px] text-[#7ed0a8]">
+                Demo Environment · No Real Charges
+              </div>
+              <p className="mt-1.5 font-inter text-[12.5px] text-white/80 leading-[1.55]">
+                본 화면은 <span className="text-white">시연용 환경</span>입니다. 실제
+                결제는 발생하지 않으며, 어떠한 카드 정보도 입력·전송되지
+                않습니다. ARITHMOS Internal Accuracy Standard v2.1.
+              </p>
             </div>
           </div>
-
-          <p className="mt-4 font-inter text-[10.5px] text-white/35 text-center leading-relaxed">
-            본 데모는 시연용 환경에서 실행되며, 실제 결제는 발생하지 않습니다.
-            ARITHMOS Internal Accuracy Standard v2.1.
-          </p>
         </div>
       </div>
     </div>
@@ -252,6 +263,26 @@ function BoltIcon() {
       aria-hidden="true"
     >
       <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#7ed0a8"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0 mt-0.5"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
     </svg>
   );
 }

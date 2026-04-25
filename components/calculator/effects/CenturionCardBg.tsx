@@ -8,27 +8,27 @@ const MODEL_URL = "/models/centurion_card.glb";
 
 function CardModel() {
   const { scene } = useGLTF(MODEL_URL);
-  return <primitive object={scene} scale={1.05} position={[0, 0, 0]} />;
+  return <primitive object={scene} scale={3.2} position={[0, 0, 0]} />;
 }
 
 export function CenturionCardBg() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <Canvas
-        camera={{ position: [0, 0, 2.6], fov: 32 }}
+        camera={{ position: [0, 0, 3.4], fov: 38 }}
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 2]}
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.55} />
-          <directionalLight position={[3, 2, 4]} intensity={1.6} color="#fff8e0" />
-          <directionalLight position={[-3, -1, 2]} intensity={0.6} color="#a48dd7" />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[3, 2, 4]} intensity={1.8} color="#fff8e0" />
+          <directionalLight position={[-3, -1, 2]} intensity={0.7} color="#a48dd7" />
           <Float
-            speed={1.2}
-            rotationIntensity={0.45}
-            floatIntensity={0.25}
-            floatingRange={[-0.04, 0.04]}
+            speed={1.1}
+            rotationIntensity={0.55}
+            floatIntensity={0.4}
+            floatingRange={[-0.08, 0.08]}
           >
             <CardModel />
           </Float>
