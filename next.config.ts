@@ -19,7 +19,7 @@ const SECURITY_HEADERS = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
-      "media-src 'self' blob:",
+      "media-src 'self' blob: https://d8j0ntlcm91z4.cloudfront.net",
       "connect-src 'self' https://api.stripe.com https://*.supabase.co https://generativelanguage.googleapis.com",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
       "worker-src 'self' blob:",
