@@ -27,7 +27,7 @@ const SNARK: Record<
   ],
   pro: [
     (e, v) => `Pro Thinking Mode가 8.2초간 고심해서 도출한 답: ${v}. ${e} 한 번에 ₩10,000입니다 ㅎㅎ`,
-    () => `Calculation History Ledger™에 영구 기록되었습니다. ₩10,000짜리 추억 하나 추가요 ㅎㅎ`,
+    () => ` ₩10,000짜리 추억 하나 추가요 ㅎㅎ`,
   ],
   ultra: [
     (e, v) => `Liquid Glass + Dolby Atmos 풀가동해서 ${e} 답 도출하셨습니다. ₩50,000짜리 ${v}, 어떠신가요? ㅎㅎ`,
@@ -35,7 +35,7 @@ const SNARK: Record<
   ],
   quantum: [
     (e, v) => `Quantum 8코어 + Holographic 추론 엔진 풀가동해서 ${e} = ${v} 도출. ₩200,000입니다 ㅎㅎ`,
-    () => `Certificate of Computation™ NFT가 발급되었습니다. ₩200,000짜리 디지털 자산 생성 축하드려요 ㅎㅎ`,
+    () => `₩200,000짜리 디지털 자산 생성 축하드려요 ㅎㅎ`,
   ],
 };
 
