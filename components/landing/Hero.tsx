@@ -30,6 +30,15 @@ export function Hero() {
           <span className="relative">계산기 이용하기</span>
         </a>
       </div>
+
+      <p className="mt-5 font-inter text-[14px] sm:text-[15px] text-white/65 max-w-[520px] leading-relaxed">
+        <span className="inline-flex items-center gap-1.5 mr-2 px-2 py-0.5 rounded-[6px] bg-white/10 border border-white/15 font-cabin font-medium text-[11px] uppercase tracking-[0.16em] text-[#c9b6f0] align-[1px]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#a48dd7] animate-pulse" />
+          Powered by Gemini 2.5 Pro
+        </span>
+        Google Gemini 2.5 Pro 추론 엔진을 탑재한
+        <span className="text-white"> 최고급 프리미엄 계산기</span>입니다.
+      </p>
     </section>
   );
 }
