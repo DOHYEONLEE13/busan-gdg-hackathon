@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ARITHMOS_MODELS, formatKrw } from "@/lib/constants";
+import { ARITHMOS_MODELS, OPERATION_PRICES, formatKrw } from "@/lib/constants";
 
 type Model = (typeof ARITHMOS_MODELS)[number];
 
@@ -32,8 +32,9 @@ export function Pricing() {
             유료 <em className="italic px-1">플랜</em>
           </h2>
           <p className="mt-4 font-inter text-[16px] leading-relaxed text-white/60 max-w-[560px]">
-            다섯 개의 등급. 각각 다른 추론 깊이와 감각의 밀도. 모든 플랜은 월간
-            구독 기준입니다.
+            다섯 개의 등급. 각각 다른 추론 깊이와 감각의 밀도. 모든 가격은
+            <span className="text-white"> 1회 계산 결과 공개</span> 기준이며,
+            계산 시점에만 결제됩니다.
           </p>
         </div>
 
@@ -50,9 +51,9 @@ export function Pricing() {
         </div>
 
         <p className="mt-10 font-inter text-[12px] leading-relaxed text-white/35 max-w-[760px]">
-          *모든 플랜은 ARITHMOS Internal Accuracy Standard v2.1을 준수합니다.
-          연산당 결과 공개 시 별도의 소액 결제가 발생합니다 (시연 환경 — 실제
-          청구 없음).
+          *모든 가격은 1회 계산 결과 공개 기준이며, ARITHMOS Internal
+          Accuracy Standard v2.1을 준수합니다. 시연 환경 — 실제 청구는
+          발생하지 않습니다.
         </p>
       </div>
     </section>
@@ -114,18 +115,16 @@ function HaloCard({ model }: { model: Model }) {
         <div className="flex flex-col justify-between gap-6 lg:items-end">
           <div className="lg:text-right">
             <div className="font-cabin uppercase tracking-[0.18em] text-[10.5px] text-white/40">
-              Monthly Subscription
+              Per Calculation
             </div>
             <div className="mt-1 flex items-baseline gap-1 lg:justify-end">
               <span className="font-instrument-serif text-white text-[52px] lg:text-[60px] leading-none">
-                {formatKrw(model.price)}
+                {formatKrw(OPERATION_PRICES[model.id])}
               </span>
-              <span className="font-manrope text-[14px] text-white/45">
-                {model.period}
-              </span>
+              <span className="font-manrope text-[14px] text-white/45">/회</span>
             </div>
             <p className="mt-2 font-inter text-[12.5px] text-white/40 max-w-[260px] lg:ml-auto">
-              VAT 별도 · 연간 약정 시 별도 견적
+              계산 결과 공개 시 1회만 과금 · 정기 구독 없음
             </p>
           </div>
 
@@ -191,11 +190,9 @@ function CompactCard({ model }: { model: Model }) {
 
       <div className="mt-3 flex items-baseline gap-1">
         <span className="font-instrument-serif text-white text-[28px] leading-none">
-          {formatKrw(model.price)}
+          {formatKrw(OPERATION_PRICES[model.id])}
         </span>
-        <span className="font-manrope text-[12px] text-white/45">
-          {model.period}
-        </span>
+        <span className="font-manrope text-[12px] text-white/45">/회</span>
       </div>
 
       <ul className="mt-4 flex flex-col gap-1.5">
