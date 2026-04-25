@@ -15,7 +15,7 @@ export function Hero() {
       </h1>
 
       <p className="mt-6 font-instrument-serif text-white/85 text-3xl sm:text-4xl lg:text-[48px] leading-[1.1] tracking-tight max-w-[820px]">
-        계산, 그 <em className="italic px-1">이상의</em> 계산.
+        프리미엄 계산기
       </p>
 
       <div className="mt-8">
