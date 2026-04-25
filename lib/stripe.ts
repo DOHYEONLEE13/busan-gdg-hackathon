@@ -27,6 +27,13 @@ export function getStripe(): Stripe {
     );
   }
 
-  stripeInstance = new Stripe(key, { typescript: true });
+  stripeInstance = new Stripe(key, {
+    typescript: true,
+    // Cloudflare Workers has no Node http/https — Stripe's default
+    // NodeHttpClient throws ECONNRESET / "request was retried" on
+    // every call. Swap to the fetch-based client so the SDK uses
+    // the Workers global fetch instead.
+    httpClient: Stripe.createFetchHttpClient(),
+  });
   return stripeInstance;
 }
