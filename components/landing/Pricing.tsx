@@ -29,7 +29,7 @@ export function Pricing() {
             요금제
           </span>
           <h2 className="mt-3 font-instrument-serif text-white text-4xl sm:text-5xl lg:text-[56px] leading-[1.05] tracking-tight">
-            정밀함의 <em className="italic px-1">계급</em>을 선택하십시오.
+            유료 <em className="italic px-1">플랜</em>
           </h2>
           <p className="mt-4 font-inter text-[16px] leading-relaxed text-white/60 max-w-[560px]">
             다섯 개의 등급. 각각 다른 추론 깊이와 감각의 밀도. 모든 플랜은 월간

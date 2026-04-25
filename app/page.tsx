@@ -4,7 +4,6 @@ import { Hero } from "@/components/landing/Hero";
 import { Navbar } from "@/components/landing/Navbar";
 import { Pricing } from "@/components/landing/Pricing";
 import { Reviews } from "@/components/landing/Reviews";
-import { Services } from "@/components/landing/Services";
 import { BACKGROUND_VIDEO_SRC } from "@/lib/constants";
 
 export default function HomePage() {
@@ -27,7 +26,6 @@ export default function HomePage() {
         <Hero />
       </section>
 
-      <Services />
       <Pricing />
       <Reviews />
       <ContactCTA />
