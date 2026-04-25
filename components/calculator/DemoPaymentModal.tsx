@@ -84,8 +84,22 @@ export function DemoPaymentModal({
             : "border-white/10"
         }`}
       >
+        {/* Top safety banner — visible before anything else, dispels
+            "wait, am I about to be charged?" the instant the modal opens. */}
+        <div className="relative px-5 py-3.5 bg-[#7ed0a8]/15 border-b border-[#7ed0a8]/30 flex items-center gap-3">
+          <ShieldFilledIcon />
+          <div className="flex-1 min-w-0">
+            <div className="font-cabin font-bold uppercase tracking-[0.16em] text-[13px] text-[#7ed0a8] leading-none">
+              실제 결제 발생하지 않음
+            </div>
+            <div className="mt-1 font-inter text-[11.5px] text-white/80 leading-tight">
+              카드 정보 입력 없음 · 청구 없음 · 시연 환경
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
+        <div className="px-6 pt-5 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
           <div>
             <span
               className={`font-cabin uppercase tracking-[0.28em] text-[10px] ${
@@ -133,8 +147,16 @@ export function DemoPaymentModal({
               <div className="font-cabin uppercase tracking-[0.16em] text-[9px] text-white/40">
                 Total
               </div>
-              <div className="mt-0.5 font-instrument-serif text-[28px] leading-none text-white">
-                {formatKrw(price)}
+              <div className="mt-0.5 flex items-baseline justify-end gap-2">
+                <span className="font-instrument-serif text-[28px] leading-none text-white line-through decoration-white/30 decoration-[1.5px]">
+                  {formatKrw(price)}
+                </span>
+                <span className="font-cabin font-bold text-[12px] uppercase tracking-[0.14em] text-[#7ed0a8]">
+                  ₩0
+                </span>
+              </div>
+              <div className="mt-1.5 font-cabin font-medium text-[10px] uppercase tracking-[0.14em] text-[#7ed0a8]">
+                실제 청구 X
               </div>
             </div>
           </div>
@@ -187,11 +209,11 @@ export function DemoPaymentModal({
           {/* Trust panel — checklist-style, plain language, multiple
               specific reassurances. Designed to dissolve any "wait,
               do I need to enter my card?" hesitation in <2 seconds. */}
-          <div className="mt-4 rounded-[14px] border border-[#7ed0a8]/30 bg-[#7ed0a8]/[0.07] px-4 py-3.5">
-            <div className="flex items-center gap-2">
+          <div className="mt-4 rounded-[14px] border-2 border-[#7ed0a8]/40 bg-[#7ed0a8]/[0.09] px-4 py-4">
+            <div className="flex items-center gap-2.5">
               <ShieldIcon />
-              <span className="font-cabin font-semibold uppercase tracking-[0.16em] text-[12px] text-[#7ed0a8]">
-                100% 안전한 시연 환경
+              <span className="font-cabin font-bold uppercase tracking-[0.14em] text-[14px] text-[#7ed0a8]">
+                100% 안전 · 실제 결제 없음
               </span>
             </div>
             <ul className="mt-2.5 space-y-1.5 font-inter text-[13px] text-white/85 leading-[1.45]">
@@ -295,6 +317,35 @@ function CheckMark() {
       className="shrink-0 mt-[3px]"
     >
       <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}
+
+function ShieldFilledIcon() {
+  return (
+    <svg
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="#7ed0a8"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <path d="M12 1L3 5v7c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z" opacity="0.25" />
+      <path
+        d="M12 1L3 5v7c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"
+        fill="none"
+        stroke="#7ed0a8"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M8.5 12.5l2.5 2.5 4.5-5"
+        fill="none"
+        stroke="#7ed0a8"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
