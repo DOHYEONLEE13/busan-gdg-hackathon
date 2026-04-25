@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -11,11 +13,13 @@ const SECURITY_HEADERS = [
   },
   // Stripe Embedded Checkout requires its own JS + frame; restrict everything else.
   // 'unsafe-inline' on style is needed for Tailwind v4 / Next.js inline critical CSS.
+  // 'unsafe-eval' is added in dev only — React uses eval() to reconstruct
+  // callstacks for the dev overlay; production never needs it.
   {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://js.stripe.com`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
