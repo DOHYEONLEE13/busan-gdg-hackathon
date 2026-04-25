@@ -49,10 +49,6 @@ export async function POST(req: NextRequest) {
       mode: "payment",
       redirect_on_completion: "never",
       customer: demoCustomerId,
-      saved_payment_method_options: {
-        payment_method_save: "disabled",
-        allow_redisplay_filters: ["always"],
-      },
       line_items: [
         {
           price_data: {
