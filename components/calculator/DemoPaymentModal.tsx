@@ -6,7 +6,6 @@ import {
   formatKrw,
   type ArithmosModelId,
 } from "@/lib/constants";
-import { CenturionCardBg } from "./effects/CenturionCardBg";
 
 type Props = {
   modelId: ArithmosModelId;
@@ -85,16 +84,8 @@ export function DemoPaymentModal({
             : "border-white/10"
         }`}
       >
-        {/* Floating Centurion card — modal-wide ambient background */}
-        <CenturionCardBg />
-        {/* Vignette so foreground copy stays readable on top of motion */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0f1015]/85 via-[#0f1015]/55 to-[#0f1015]/90"
-        />
-
         {/* Header */}
-        <div className="relative px-6 pt-6 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
+        <div className="px-6 pt-6 pb-4 border-b border-white/5 flex items-start justify-between gap-3">
           <div>
             <span
               className={`font-cabin uppercase tracking-[0.28em] text-[10px] ${
@@ -125,7 +116,7 @@ export function DemoPaymentModal({
         </div>
 
         {/* Order summary */}
-        <div className="relative px-6 py-5 space-y-4">
+        <div className="px-6 py-5 space-y-4">
           <div className="flex items-baseline justify-between gap-3">
             <div className="min-w-0">
               <div className="font-cabin uppercase tracking-[0.18em] text-[9px] text-white/40">
@@ -168,7 +159,7 @@ export function DemoPaymentModal({
         </div>
 
         {/* Action area */}
-        <div className="relative px-6 pb-6">
+        <div className="px-6 pb-6">
           {stage === "idle" ? (
             <button
               type="button"
